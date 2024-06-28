@@ -2,6 +2,15 @@ import csv
 import json
 from dateutil import parser
 import googlemaps
+from datetime import datetime
+
+def parse_date(timestr):
+    try:
+        # Attempt to parse with dateutil
+        dt = datetime.strptime(timestr, '%Y-%m-%d %H:%M:%S %z %Z')
+        return dt
+    except ValueError:
+        raise ValueError(f"Unknown string format: {timestr}")
 
 # The program should accept a CSV file containing historical rainfall data. Each entry should include a timestamp,
 # location (latitude and longitude), and rainfall amount (in mm).
@@ -22,13 +31,19 @@ for row in reader:
     json.dump(row, jsonfile)
     jsonfile.write('\n')
 
+data = []
+
 # process the JSON data
-with open('data.json', 'r') as file:
-    data = json.load(file)
+with open('data.json', 'r') as f:
+    for line in f:
+        try:
+            data.append(json.loads(line))
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON: {e}")
 
 # Define the date range
-start_date = parser.parse('2024-05-14 00:00:00 +0000 UTC')
-end_date = parser.parse('2024-05-17 23:59:59 +0000 UTC')
+start_date = parse_date('2024-05-14 00:00:00 +0000 UTC')
+end_date = parse_date('2024-05-17 23:59:59 +0000 UTC')
 
 # Cities in Saarland
 cities_in_saarland_coords = {
@@ -90,16 +105,21 @@ cities_in_saarland_coords = {
 GOOGLE_MAPS_API_KEY = "AIzaSyCDKwj1fOxCW6VAQOc8djbb0mclhywXUcI"
 gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)
 geocode_result = gmaps.geocode('23325')
-print(geocode_result)
+#print(geocode_result)
 
-filtered_data = []  # list of filtered data from JSON
+
+format_date = '%Y-%m-%d %H:%M:%S'
+
+# list of filtered data from JSON
+filtered_data = []
 
 # Filter data based on date and location
-for entry in data:
+for i in range(len(data)-1):
+    entry = data[i+1]
+    #print("ENTRY: ", entry)
     city = entry["city_name"]
-    date = parser.parse(entry["dt_iso"])
-    if start_date <= date <= end_date and city in cities_in_saarland_coords:
+    parsed_date = parse_date(entry["dt_iso"])
+    #print(parsed_date)
+    if start_date <= parsed_date <= end_date and city in cities_in_saarland_coords:
         json.dump(entry, filtered_json)
         filtered_json.write('\n')
-
-
