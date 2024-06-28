@@ -2,6 +2,13 @@ import json
 import math 
 import re 
 
+# Flood Zone Prediction
+# Using the processed rainfall data, predict potential flood zones. For simplicity, 
+# assume a basic threshold model where areas receiving more than a certain amount of rainfall 
+# within a specific time frame are at risk of flooding.
+# The threshold values can be predefined (e.g., 50mm of rainfall in 24 hours).
+
+
 def haversine(lat1, lon1, lat2, lon2):
     """
     Calculate the great circle distance between two points
@@ -44,12 +51,6 @@ def isDanger(data):
         return True
     return False
 
-# Flood Zone Prediction
-# Using the processed rainfall data, predict potential flood zones. For simplicity, 
-# assume a basic threshold model where areas receiving more than a certain amount of rainfall 
-# within a specific time frame are at risk of flooding.
-# The threshold values can be predefined (e.g., 50mm of rainfall in 24 hours).
-
 rainToSkill = []
 data = []
 possibleFlood = open('possible_flood.json', 'w')
@@ -81,12 +82,12 @@ with open('filtered_data.json', 'r') as f:
 
 def assign_skill(rain): 
     """
-    assign required level skill according to rainfall 
+    assign required level skill according to rainfall
     """
     regex = r"(?:\d+\s*-\s*\d+)|<(?:\s*\d+)|>(?:\s*\d+)"
     pattern = re.compile(regex)
     for s in rainToSkill: 
-        match = pattern.search(s[""])
+        match = pattern.search(s["amount of rain"])
         if match: 
             return s["Required Skill Level"]
 
@@ -105,7 +106,6 @@ for i in range(len(data)):
     lon = float(data[i]["lon"])
     desc = data[i]["weather_description"]
     data[i]["requried_skill"] = find(desc)
-    print(data[i]["requried_skill"])
     is_within_5km_saar = point_within_distance_of_river(lat, lon, saar_river_coordinates, max_distance_km=5)
     is_within_5km_blies = point_within_distance_of_river(lat, lon, blies_river_coordinates, max_distance_km=5)
     if is_within_5km_blies or is_within_5km_saar or isDanger(data[i]): 

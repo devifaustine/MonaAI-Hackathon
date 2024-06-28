@@ -1,9 +1,10 @@
 import csv 
 import json
 
+# converts csv file to JSON
+
 csvfile = open("C:/Users/devif/PycharmProjects/MonaAI-Hackathon/data/502acf0c3bfbe29dd8496a42634e85c7.csv", "r")
 jsonfile = open('data.json', 'w')
-
 
 fieldnames = ("dt",	"dt_iso",	"timezone",	"city_name",	"lat",	"lon",	"temp",	"visibility",	"dew_point",
               "feels_like",	"temp_min",	"temp_max",	"pressure",	"sea_level",	"grnd_level",	"humidity",
