@@ -45,20 +45,3 @@ for i in json_objects:
     rainToSkill_json.write('\n')
 
 print(f"Successfully wrote JSON objects to {rainToSkill_json}")
-
-
-# # convert csv to JSON
-# reader = csv.DictReader(csvfile, fieldnames)
-# for row in reader:
-#     parts = row.split(';')
-
-#     # Extracting components
-#     weather_description = parts[0]
-#     required_skill_level = parts[1]
-#     amount_of_rain = parts[2]
-
-#     json.dump(row, jsonfile)
-#     jsonfile.write('\n')
-
-# # Convert to JSON
-# json_data = json.dumps(weather_data, indent=2)
