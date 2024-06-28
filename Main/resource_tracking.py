@@ -8,6 +8,7 @@ with their current status (available, deployed, under maintenance) and location.
 """
 
 firestations = []
+working_fireworkers_json = open('available_fireworkers.json', 'w')
 
 # process the JSON data
 with open('fireworkers.json', 'r') as f:
@@ -17,13 +18,21 @@ with open('fireworkers.json', 'r') as f:
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}")
 
-real = []
-freiwillig = []
+fireworker = []
 
 # sort the firestations with fulltime fireworkers and voluntary 
 for f in firestations:
-    if "Freiwillige" in f["name"]:
-        freiwillig.append(f)
+    name = f["name"]
+    if f["permanently_closed"]:  # fireman not working anymore 
+        continue
+    if "Freiwillige" in name or "Alt" in name:
+        f["freiwillig_alt"] = True
     else: 
-        real.append(f)
+        f["freiwillig_alt"] = False
+    fireworker.append(f)
+    
+for i in fireworker:
+    json.dump(i, working_fireworkers_json)
+    working_fireworkers_json.write('\n')
 
+print("Finish processing and fireworkers data.")
