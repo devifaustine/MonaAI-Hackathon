@@ -1,0 +1,21 @@
+{"Weather Description": "\u00ef\u00bb\u00bfWeather Description;Required Skill Level;amount of rain", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "broken clouds;Basic Skills;0", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "drizzle;Intermediate Skills;0.1 - 0.5", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "few clouds;Basic Skills;0", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "fog;Advanced Skills;0 - 0.2", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "heavy intensity rain;Advanced Skills;> 10", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "heavy intensity shower rain;Advanced Skills;> 10", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "light intensity drizzle;Basic Skills;0.1 - 0.3", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "light intensity drizzle rain;Basic Skills;0.1 - 0.3", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "light intensity shower rain;Basic Skills;0.1 - 2", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "light rain;Basic Skills;0.5 - 2", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "light snow;Intermediate Skills;-", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "mist;Intermediate Skills;0 - 0.1", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "moderate rain;Intermediate Skills;2-10", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "overcast clouds;Intermediate Skills;0", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "rain and drizzle;Intermediate Skills;0.5 - 5", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "scattered clouds;Basic Skills;0", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "shower rain;Intermediate Skills;2-10", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "sky is clear;Basic Skills;0", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "thunderstorm with light rain;Advanced Skills;10-20", "Required Skill Level": null, "amount of rain": null}
+{"Weather Description": "thunderstorm with rain;Advanced Skills;20 - 50", "Required Skill Level": null, "amount of rain": null}
