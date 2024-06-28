@@ -1,12 +1,15 @@
 import csv
 import json
-from dateutil import parser
 import googlemaps
 from datetime import datetime
+import time 
+
+def process_data():
+    time.sleep(0.1)  # Simulate some processing time
 
 def parse_date(timestr):
+    # parse the date from JSON
     try:
-        # Attempt to parse with dateutil
         dt = datetime.strptime(timestr, '%Y-%m-%d %H:%M:%S %z %Z')
         return dt
     except ValueError:
@@ -104,11 +107,6 @@ cities_in_saarland_coords = {
 
 GOOGLE_MAPS_API_KEY = "AIzaSyCDKwj1fOxCW6VAQOc8djbb0mclhywXUcI"
 gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)
-geocode_result = gmaps.geocode('23325')
-#print(geocode_result)
-
-
-format_date = '%Y-%m-%d %H:%M:%S'
 
 # list of filtered data from JSON
 filtered_data = []
@@ -116,10 +114,25 @@ filtered_data = []
 # Filter data based on date and location
 for i in range(len(data)-1):
     entry = data[i+1]
-    #print("ENTRY: ", entry)
     city = entry["city_name"]
     parsed_date = parse_date(entry["dt_iso"])
-    #print(parsed_date)
-    if start_date <= parsed_date <= end_date and city in cities_in_saarland_coords:
-        json.dump(entry, filtered_json)
-        filtered_json.write('\n')
+    geocode_result = gmaps.geocode(city)
+    lat = geocode_result[0]["geometry"]["location"]["lat"]
+    lon = geocode_result[0]["geometry"]["location"]["lng"]
+    lat2, lon2 = float(entry["lat"]), float(entry["lon"])
+    if entry["weather_main"] == "Rain":
+        if start_date <= parsed_date <= end_date and city in cities_in_saarland_coords and lat == lat2 and lon == lon2:
+            json.dump(entry, filtered_json)
+            filtered_json.write('\n')
+
+    # Calculate percentage completed
+    progress = i / (len(data) - 1) * 100
+
+    # Calculate number of dashes to display based on progress
+    num_dashes = int(progress // (100 / 30))  # Adjust 30 based on console width
+
+    # Display progress in the console
+    bar = '-' * num_dashes + ' ' * (30 - num_dashes)
+    print(f'\r[{bar}] {progress:.2f}%', end='', flush=True)
+
+print("Processing completed.")
