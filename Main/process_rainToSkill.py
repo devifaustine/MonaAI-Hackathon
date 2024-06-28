@@ -5,16 +5,60 @@ import json
 # Initialize an empty list to store weather data
 weather_data = []
 
-csvfile = open("C:/Users/devif/PycharmProjects/MonaAI-Hackathon/data/rainToSkillTabel.csv", "r", newline='')
-jsonfile = open('rainToSkill.json', 'w')
+csvfile = "C:/Users/devif/PycharmProjects/MonaAI-Hackathon/data/rainToSkillTabel.csv"
+rainToSkill_json = open('rainToSkill.json', 'w')
 
-fieldnames = ("Weather Description", "Required Skill Level", "amount of rain")
+# Define field names
+fieldnames = ["Weather Description", "Required Skill Level", "amount of rain"]
 
-# convert csv to JSON
-reader = csv.DictReader(csvfile, fieldnames)
-for row in reader:
-    json.dump(row, jsonfile)
-    jsonfile.write('\n')
+# List to store JSON objects
+json_objects = []
 
-# Convert to JSON
-json_data = json.dumps(weather_data, indent=2)
+# Read CSV file and convert to JSON objects
+with open(csvfile, mode='r', newline='', encoding='utf-8') as file:
+    csv_reader = csv.reader(file, delimiter=';')
+    # Skip header row
+    next(csv_reader)  # skip the header row
+    for row in csv_reader:
+        # Extract components
+        weather_description = row[0]
+        required_skill_level = row[1]
+        amount_of_rain = row[2]
+        
+        # Handle '-' as None for amount of rain
+        if amount_of_rain == '-':
+            amount_of_rain = None
+        
+        # Create dictionary for JSON object
+        json_obj = {
+            fieldnames[0]: weather_description,
+            fieldnames[1]: required_skill_level,
+            fieldnames[2]: amount_of_rain
+        }
+        
+        # Append JSON object to list
+        json_objects.append(json_obj)
+
+# Write JSON objects to a JSON file
+for i in json_objects:
+    json.dump(i, rainToSkill_json)
+    rainToSkill_json.write('\n')
+
+print(f"Successfully wrote JSON objects to {rainToSkill_json}")
+
+
+# # convert csv to JSON
+# reader = csv.DictReader(csvfile, fieldnames)
+# for row in reader:
+#     parts = row.split(';')
+
+#     # Extracting components
+#     weather_description = parts[0]
+#     required_skill_level = parts[1]
+#     amount_of_rain = parts[2]
+
+#     json.dump(row, jsonfile)
+#     jsonfile.write('\n')
+
+# # Convert to JSON
+# json_data = json.dumps(weather_data, indent=2)
