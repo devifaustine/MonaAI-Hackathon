@@ -94,9 +94,6 @@ cities_in_saarland_coords = {
 GOOGLE_MAPS_API_KEY = "AIzaSyCDKwj1fOxCW6VAQOc8djbb0mclhywXUcI"
 gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)
 
-# list of filtered data from JSON
-filtered_data = []
-
 # Filter data based on date and location
 for i in range(len(data)-1):
     entry = data[i+1]
