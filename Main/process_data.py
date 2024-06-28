@@ -1,8 +1,11 @@
-import csv
 import json
 import googlemaps
 from datetime import datetime
 import time 
+
+# The program should accept a CSV file containing historical rainfall data. Each entry should include a timestamp,
+# location (latitude and longitude), and rainfall amount (in mm).
+# Process this data to calculate the average rainfall over different regions.
 
 def process_data():
     time.sleep(0.1)  # Simulate some processing time
@@ -14,26 +17,7 @@ def parse_date(timestr):
         return dt
     except ValueError:
         raise ValueError(f"Unknown string format: {timestr}")
-
-# The program should accept a CSV file containing historical rainfall data. Each entry should include a timestamp,
-# location (latitude and longitude), and rainfall amount (in mm).
-# Process this data to calculate the average rainfall over different regions.
-
-csvfile = open("C:/Users/devif/PycharmProjects/MonaAI-Hackathon/data/502acf0c3bfbe29dd8496a42634e85c7.csv", "r")
-jsonfile = open('data.json', 'w')
-filtered_json = open('filtered_data.json', 'w')
-
-fieldnames = ("dt",	"dt_iso",	"timezone",	"city_name",	"lat",	"lon",	"temp",	"visibility",	"dew_point",
-              "feels_like",	"temp_min",	"temp_max",	"pressure",	"sea_level",	"grnd_level",	"humidity",
-              "wind_speed",	"wind_deg",	"wind_gust",	"rain_1h",	"rain_3h",	"snow_1h",	"snow_3h",	"clouds_all",
-              "weather_id",	"weather_main", "weather_description", "weather_icon")
-
-# convert csv to JSON
-reader = csv.DictReader(csvfile, fieldnames)
-for row in reader:
-    json.dump(row, jsonfile)
-    jsonfile.write('\n')
-
+    
 data = []
 
 # process the JSON data
@@ -43,6 +27,8 @@ with open('data.json', 'r') as f:
             data.append(json.loads(line))
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}")
+
+filtered_json = open('filtered_data.json', 'w')
 
 # Define the date range
 start_date = parse_date('2024-05-14 00:00:00 +0000 UTC')
@@ -114,14 +100,19 @@ filtered_data = []
 # Filter data based on date and location
 for i in range(len(data)-1):
     entry = data[i+1]
-    city = entry["city_name"]
+    city = entry["city_name"].encode('utf-8').decode('utf-8')
     parsed_date = parse_date(entry["dt_iso"])
     geocode_result = gmaps.geocode(city)
-    lat = geocode_result[0]["geometry"]["location"]["lat"]
-    lon = geocode_result[0]["geometry"]["location"]["lng"]
+    try: 
+        lat = geocode_result[0]["geometry"]["location"]["lat"]
+        lon = geocode_result[0]["geometry"]["location"]["lng"]
+    except IndexError:
+        continue
     lat2, lon2 = float(entry["lat"]), float(entry["lon"])
+    if city not in cities_in_saarland_coords: 
+        continue
     if entry["weather_main"] == "Rain":
-        if start_date <= parsed_date <= end_date and city in cities_in_saarland_coords and lat == lat2 and lon == lon2:
+        if start_date <= parsed_date <= end_date and round(lat,2) == round(lat2,2) and round(lon,2) == round(lon2,2):
             json.dump(entry, filtered_json)
             filtered_json.write('\n')
 
@@ -135,4 +126,5 @@ for i in range(len(data)-1):
     bar = '-' * num_dashes + ' ' * (30 - num_dashes)
     print(f'\r[{bar}] {progress:.2f}%', end='', flush=True)
 
+print()
 print("Processing completed.")
