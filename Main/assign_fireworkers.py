@@ -1,4 +1,5 @@
 import json 
+import math
 
 """
 Task 4: Team Matching
@@ -47,27 +48,28 @@ def point_within_distance_of_river(point_lat, point_lon, river_coordinates, max_
 def near(loc1, loc2): 
     return point_within_distance_of_river(loc1[0], loc1[1], loc2, max_distance_km=10)
 
+def find_available(arr, location):
+    for f in arr: 
+        available = f["opening_hours/open_now"]
+        f_loc = [(float(f["geometry/viewport/south"]), float(f["geometry/viewport/west"])), 
+                 (float(f["geometry/viewport/north"]), float(f["geometry/viewport/east"]))]
+        if available == "true" and near(location, f_loc): 
+            f["opening_hours/open_now"] = "false"
+            return f
+
 def find_firefighter(skill, flood):
     """
     Finding a firefighter with skill accordingly 
     """
-    location = (flood["lat"], flood["lon"])
+    location = (float(flood["lat"]), float(flood["lon"]))
     if skill == "Advanced":
-        for f in working: 
-            available = f["opening_hours/open_now"]
-            f_loc = [(f["geometry/viewport/south"], f["geometry/viewport/west"]), 
-                     (f["geometry/viewport/north"], f["geometry/viewport/east"])]
-            if available == "true" and near(location, f_loc): 
-                f["opening_hours/open_now"] = "false"
-                return f
+        ff = find_available(working, location)
+        if ff is None: 
+            ff = find_available(voluntary, location)
+        return ff
     elif skill == "Intermediate": 
-        for f in voluntary: 
-            available = f["opening_hours/open_now"]
-            f_loc = [(f["geometry/viewport/south"], f["geometry/viewport/west"]), 
-                     (f["geometry/viewport/north"], f["geometry/viewport/east"])]
-            if available == "true" and near(location, f_loc): 
-                f["opening_hours/open_now"] = "false"
-                return f
+        ff = find_available(voluntary, location)
+        return ff
     else: 
         raise Exception("Skill not available.")
 
@@ -99,17 +101,20 @@ with open('possible_flood.json', 'r') as locations:
 for flood in flood_location:
     if "Advanced" in flood["requried_skill"]:
         for i in range(20):
-            firefighter = find_firefighter('Advanced')
+            firefighter = find_firefighter('Advanced', flood)
             assignment = {
-                "name": firefighter["name"], 
+                "place_id": firefighter["place_id"], 
                 "location": flood["city_name"]
             }
     else:  # case intermediate required 
         for i in range(20):
-            firefighter = find_firefighter('Intermediate')
+            firefighter = find_firefighter('Intermediate', flood)
+            print(firefighter)
             assignment = {
-                "name": firefighter["name"], 
+                "place_id": firefighter["place_id"], 
                 "location": flood["city_name"]
             }
-    
+    assignments.append(assignment)
+
+print(assignments)
     
